@@ -1,0 +1,10 @@
+ 4 {
+            #Step B4: List running processes sorted by virtual size in grid format
+            <#Get-Process: Retrieves a list of all running processes.
+Sort-Object -Property VM: Sorts the processes by their virtual memory size.
+Format-Table -Property Name, Id, VM -AutoSize: Specifies the columns to display: Name, Id, and VM (virtual memory size), and automatically sizes the table.
+Out-String: Converts the formatted table into a string for output.#>
+            # Old code Get-Process | Sort-Object -Property VM | Format-Table -Autosize | Out-String
+            Get-Process | Sort-Object -Property VM | Format-Table -Property Name, Id, VM -AutoSize | Out-String
+
+        }
