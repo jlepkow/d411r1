@@ -40,20 +40,21 @@ CREATE TABLE [$databaseName].[dbo].[$tableName] (
 
     # Import data from CSV
     $csvPath = ".\NewClientData.csv"
-    $csvData = Import-Csv $csvPath
-    
-    foreach ($row in $csvData) {
-        $insertQuery = @"
-INSERT INTO [$tableName] (ContactID, FirstName, LastName, Email, Phone)
-VALUES ($($row.ContactID), '$($row.FirstName)', '$($row.LastName)', '$($row.Email)', '$($row.Phone)')
-"@
-        Invoke-Sqlcmd -ServerInstance $sqlServerInstanceName -Database $databaseName -Query $insertQuery
-    }
-    Write-Host -ForegroundColor Green "Data imported successfully from $csvPath"
+$csvData = Import-Csv $csvPath
 
-    # Generate output file
-    Invoke-Sqlcmd -Database ClientDB -ServerInstance .\SQLEXPRESS -Query 'SELECT * FROM dbo.Client_A_Contacts' > .\SqlResults.txt
-    Write-Host -ForegroundColor Green "Results exported to SqlResults.txt"
+foreach ($row in $csvData) {
+    $insertQuery = @"
+INSERT INTO [$tableName] (ContactID, FirstName, LastName, Email, Phone)
+VALUES ('$($row.ContactID)', '$($row.FirstName)', '$($row.LastName)', '$($row.Email)', '$($row.Phone)')
+"@
+    Invoke-Sqlcmd -ServerInstance $sqlServerInstanceName -Database $databaseName -Query $insertQuery
+}
+
+Write-Host -ForegroundColor Green "Data imported successfully from $csvPath"
+
+# Generate output file
+Invoke-Sqlcmd -Database ClientDB -ServerInstance .\SQLEXPRESS -Query 'SELECT * FROM dbo.Client_A_Contacts' > .\SqlResults.txt
+Write-Host -ForegroundColor Green "Results exported to SqlResults.txt"
 
 } catch {
     Write-Host -ForegroundColor Red "An error occurred:"
